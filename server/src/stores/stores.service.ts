@@ -39,11 +39,16 @@ export class StoresService {
       }
     } else {
       const postcodes = data.map((el) => el.postcode);
-      return await axios
-        .post('https://api.postcodes.io/postcodes?filter=longitude,latitude', {
-          postcodes,
-        })
+      const response = await axios
+        .post(
+          'https://api.postcodes.io/postcodes?filter=postcode,longitude,latitude',
+          {
+            postcodes,
+          },
+        )
         .then((res) => res.data.result);
+
+      return response.map((el) => el.result);
     }
   }
 
@@ -73,8 +78,12 @@ export class StoresService {
 
         // DB에 일치한 정보가 있는 경우
         if (storesInDB.length !== 0) {
+          const filteredStore = storesInDB.map((store) => {
+            const { postcode, latitude, longitude } = store;
+            return { postcode, latitude, longitude };
+          });
           // 북에서 남쪽 방향 순으로 정렬
-          const sortByLatitude = storesInDB.sort(
+          const sortByLatitude = filteredStore.sort(
             (a, b) => b.latitude - a.latitude,
           );
           return {
