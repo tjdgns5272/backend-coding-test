@@ -1,4 +1,5 @@
 export class Coordinates {
-    name: string;
-    postcode: string;
+  postcode: string;
+  latitude: string;
+  longitude: string;
 }
